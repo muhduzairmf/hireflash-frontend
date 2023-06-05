@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
-        "serve": "npx serve ./dist -l 0.0.0.0:$PORT"
+        "serve": "npx serve ./dist -l tcp://0.0.0.0:$PORT"
     },
     "dependencies": {
         "@uploadcare/blocks": "0.22.3",
