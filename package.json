@@ -6,8 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "preview": "vite preview",
-        "serve": "npx http-server ./dist -p $PORT -a 0.0.0.0"
+        "preview": "vite preview"
     },
     "dependencies": {
         "@uploadcare/blocks": "0.22.3",
