@@ -14,5 +14,6 @@ export default defineConfig({
     ],
     server: {
         host: "0.0.0.0",
+        port: process.env.PORT, // Please comment this line for development purpose only
     },
 });
