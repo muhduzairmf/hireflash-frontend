@@ -1,5 +1,4 @@
 <script setup>
-import OptionCountries from "../../components/OptionCountries.vue";
 import TitleBorder from "../../components/TitleBorder.vue";
 import { ref } from "vue";
 import { baseEndpoint, company } from "../../stores";
