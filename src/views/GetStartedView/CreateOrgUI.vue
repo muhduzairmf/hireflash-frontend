@@ -227,7 +227,7 @@ function toggleToastMsg(msgForToast) {
                     heightselect="40"
                     widthselect="96"
                     placeholderval="Select nationality"
-                    v-bind:isdisabled="true"
+                    v-bind:isdisabled="false"
                 >
                     <template v-for="opt in countries">
                         <OptionCustom
