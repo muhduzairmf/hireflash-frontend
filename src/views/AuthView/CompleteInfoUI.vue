@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import router from "../../router";
-import OptionCountries from "../../components/OptionCountries.vue";
 import ToastMsg from "../../components/ToastMsg.vue";
 import { baseEndpoint } from "../../stores";
 import SelectCustom from "../../components/SelectCustom.vue";
