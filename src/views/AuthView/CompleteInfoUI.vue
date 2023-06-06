@@ -5,6 +5,7 @@ import ToastMsg from "../../components/ToastMsg.vue";
 import { baseEndpoint } from "../../stores";
 import SelectCustom from "../../components/SelectCustom.vue";
 import OptionCustom from "../../components/OptionCustom.vue";
+import { countries } from "../../lib/CountryList";
 
 document.title = "Complete Account Info - Hireflash";
 
