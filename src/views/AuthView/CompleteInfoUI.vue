@@ -23,7 +23,11 @@ const nationality = ref("");
 const preferred_salary = ref("");
 const about = ref("");
 
+const isSubmit = ref(false);
+
 async function toProfile() {
+    isSubmit.value = true;
+
     const response = await fetch(baseEndpoint + "/candidate-profile", {
         method: "POST",
         mode: "cors",
@@ -41,10 +45,14 @@ async function toProfile() {
     });
 
     if (response.status !== 201) {
+        isSubmit.value = true;
+
         toggleToastMsg(
             "Complete account information failed. Please try again."
         );
     } else {
+        isSubmit.value = true;
+
         window.sessionStorage.removeItem("newuser");
         window.sessionStorage.removeItem("user_id");
         router.push("/profile");
@@ -203,23 +211,30 @@ function toggleToastMsg(msgForToast) {
                 ></textarea>
             </div>
             <!-- Button -->
-            <button
-                type="submit"
-                class="w-full h-10 mt-6 rounded-md bg-indigo-800 text-gray-50 flex justify-center items-center gap-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
-                v-bind:disabled="preventSubmit()"
-                v-bind:class="{
-                    'disabled:cursor-not-allowed opacity-60': preventSubmit(),
-                }"
-            >
-                <p>Go to Profile</p>
-                <i class="bi bi-arrow-right text-lg"></i>
-            </button>
-            <button
-                type="submit"
-                class="w-full h-10 mt-3 rounded-md border-2 border-indigo-800 text-indigo-800 flex justify-center items-center gap-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
-            >
-                <p>Skip for now</p>
-            </button>
+            <template v-if="!isSubmit">
+                <button
+                    type="submit"
+                    class="w-full h-10 mt-6 rounded-md bg-indigo-800 text-gray-50 flex justify-center items-center gap-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
+                    v-bind:disabled="preventSubmit()"
+                    v-bind:class="{
+                        'disabled:cursor-not-allowed opacity-60':
+                            preventSubmit(),
+                    }"
+                >
+                    <p>Go to Profile</p>
+                    <i class="bi bi-arrow-right text-lg"></i>
+                </button>
+                <button
+                    type="submit"
+                    class="w-full h-10 mt-3 rounded-md border-2 border-indigo-800 text-indigo-800 flex justify-center items-center gap-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
+                >
+                    <p>Skip for now</p>
+                </button>
+            </template>
+            <!-- Loading -->
+            <div class="w-full h-10 mt-6 grid place-items-center" v-else>
+                <Loading color="indigo" />
+            </div>
             <div class="flex justify-center mt-2">
                 <small><em>All input section are optional </em></small>
             </div>

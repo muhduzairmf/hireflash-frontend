@@ -10,6 +10,7 @@ import {
     continueUrl,
 } from "../../stores";
 import { createCookie, autoLogin } from "../../lib/Auth";
+import Loading from "../../components/Loading.vue";
 
 document.title = "Login - Hireflash";
 
@@ -58,8 +59,12 @@ function togglePassword() {
 const email = ref("");
 const password = ref("");
 
+const isSubmit = ref(false);
+
 //
 async function submitLogin() {
+    isSubmit.value = true;
+
     const response = await fetch(baseEndpoint + "/auth/login", {
         method: "POST",
         mode: "cors",
@@ -74,7 +79,13 @@ async function submitLogin() {
     const res = await response.json();
 
     if (response.status !== 200) {
-        toggleToastMsg("Login failed. Please try again.");
+        isSubmit.value = false;
+
+        if (response.status === 404 || response.status === 401) {
+            toggleToastMsg("Email or Password is invalid. Please try again.");
+        } else {
+            toggleToastMsg("Login failed. Please try again.");
+        }
     } else {
         email.value = "";
         password.value = "";
@@ -94,13 +105,19 @@ async function submitLogin() {
 
 function redirect(role) {
     if (continueUrl.value) {
+        isSubmit.value = false;
+
         router.push(continueUrl.value);
         return;
     }
 
     if (role === "applicant") {
+        isSubmit.value = false;
+
         router.push("/profile");
     } else {
+        isSubmit.value = false;
+
         router.push("/workspace");
     }
 }
@@ -179,10 +196,15 @@ function preventSubmit() {
                 v-bind:class="{
                     'disabled:cursor-not-allowed opacity-60': preventSubmit(),
                 }"
+                v-if="!isSubmit"
             >
                 <p class="">Login</p>
                 <i class="bi bi-box-arrow-in-right text-lg"></i>
             </button>
+            <!-- Loading -->
+            <div class="w-full h-10 mt-6 grid place-items-center" v-else>
+                <Loading color="indigo" />
+            </div>
             <!-- Small message -->
             <div class="flex justify-center mt-2">
                 <small

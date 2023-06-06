@@ -57,8 +57,12 @@ if (inviteToken !== "" && role_id !== "" && email.value !== "") {
     history.pushState({}, "", modifiedUrl);
 }
 
+const isSubmit = ref(false);
+
 // A function to submit sign up form
 async function submitSignUp() {
+    isSubmit.value = true;
+
     const response = await fetch(baseEndpoint + "/auth/signup", {
         method: "POST",
         mode: "cors",
@@ -78,6 +82,8 @@ async function submitSignUp() {
     console.log(res);
 
     if (response.status !== 201) {
+        isSubmit.value = false;
+
         toggleToastMsg("Signup failed. Please try again.");
     } else {
         email.value = "";
@@ -97,6 +103,8 @@ async function submitSignUp() {
 
 async function redirect(newUser) {
     if (newUser.role === "applicant") {
+        isSubmit.value = false;
+
         window.sessionStorage.setItem("newuser", "true");
         window.sessionStorage.setItem("user_id", newUser.id);
         afterFocusPaswd.value = false;
@@ -115,8 +123,12 @@ async function redirect(newUser) {
         });
 
         if (response.status !== 201) {
+            isSubmit.value = false;
+
             toggleToastMsg("Signup failed. Please try again.");
         } else {
+            isSubmit.value = false;
+
             afterFocusPaswd.value = false;
             router.push("/workspace");
         }
@@ -294,10 +306,15 @@ function toggleToastMsg(msgForToast) {
                 v-bind:class="{
                     'disabled:cursor-not-allowed opacity-60': preventSubmit(),
                 }"
+                v-if="!isSubmit"
             >
                 <p class="">Sign Up</p>
                 <i class="bi bi-box-arrow-in-right text-lg"></i>
             </button>
+            <!-- Loading -->
+            <div class="w-full h-10 mt-6 grid place-items-center" v-else>
+                <Loading color="indigo" />
+            </div>
             <!-- Small message -->
             <div class="flex justify-center mt-2">
                 <small
