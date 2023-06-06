@@ -5,7 +5,6 @@ import DialogModal from "../../components/DialogModal.vue";
 import { onMounted, ref } from "vue";
 import { baseEndpoint, candidate_profile } from "../../stores";
 import PdfRenderer from "../../components/PdfRenderer.vue";
-import { pdfEndpoint } from "../../stores";
 import FileUploader from "../../components/FileUploader.vue";
 import Loading from "../../components/Loading.vue";
 
