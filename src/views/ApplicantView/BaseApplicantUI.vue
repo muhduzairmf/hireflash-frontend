@@ -31,9 +31,18 @@ onMounted(async () => {
     const res = await response.json();
 
     if (response.status !== 200) {
-        redirectLogin.value = true;
-        messageRedirect.value = "Error occured after login. Please try again.";
-        router.push("/auth/login");
+        if (res.message === "User id is not found.") {
+            redirectLogin.value = true;
+            messageRedirect.value =
+                "Login session invalid. Please login to continue.";
+            deleteCookie();
+            router.push("/auth/login");
+        } else {
+            redirectLogin.value = true;
+            messageRedirect.value =
+                "Error occured after login. Please try again.";
+            router.push("/auth/login");
+        }
     } else {
         user.value = res.data;
 
