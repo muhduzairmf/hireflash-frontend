@@ -3,13 +3,18 @@ import { ref } from "vue";
 import router from "../../router";
 import ToastMsg from "../../components/ToastMsg.vue";
 import { baseEndpoint } from "../../stores";
+import Loading from "../../components/Loading.vue";
 
 document.title = "Forgot Password - Hireflash";
 
 const email = ref("");
 
+const isSubmit = ref(false);
+
 //
 async function toVerify() {
+    isSubmit.value = true;
+
     const response = await fetch(baseEndpoint + "/auth/forgot-password", {
         method: "POST",
         mode: "cors",
@@ -23,11 +28,15 @@ async function toVerify() {
     const res = await response.json();
 
     if (response.status !== 200) {
+        isSubmit.value = false;
+
         toggleToastMsg(res.message);
     } else {
-        email.value = "";
+        isSubmit.value = false;
+
         window.sessionStorage.setItem("verifyId", res.data.id);
         window.sessionStorage.setItem("user_email", email.value);
+        email.value = "";
 
         router.push("/auth/forgot-password/verify");
     }
@@ -93,10 +102,14 @@ function toggleToastMsg(msgForToast) {
                 v-bind:class="{
                     'disabled:cursor-not-allowed opacity-60': preventSubmit(),
                 }"
+                v-if="!isSubmit"
             >
                 <p>Next</p>
                 <i class="bi bi-arrow-right text-lg"></i>
             </button>
+            <div class="w-full h-10 mt-6 grid place-items-center" v-else>
+                <Loading color="indigo" />
+            </div>
         </form>
     </main>
 </template>

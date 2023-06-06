@@ -3,6 +3,7 @@ import { ref } from "vue";
 import router from "../../router";
 import ToastMsg from "../../components/ToastMsg.vue";
 import { baseEndpoint } from "../../stores";
+import Loading from "../../components/Loading.vue";
 
 document.title = "Create New Password - Hireflash";
 
@@ -26,10 +27,14 @@ function togglePassword() {
 const newpassword = ref("");
 const confirmnewpassword = ref("");
 
+const isSubmit = ref(false);
+
 //
 async function toLogin() {
+    isSubmit.value = true;
+
     const response = await fetch(
-        baseEndpoint + "/forgot-password/new-password",
+        baseEndpoint + "/auth/forgot-password/new-password",
         {
             method: "POST",
             mode: "cors",
@@ -43,10 +48,15 @@ async function toLogin() {
         }
     );
 
-    // const res = await response.json();
+    const res = await response.json();
 
-    if (response.status) {
+    if (response.status !== 200) {
+        isSubmit.value = false;
+
+        toggleToastMsg(res.message);
     } else {
+        isSubmit.value = false;
+
         newpassword.value = "";
         confirmnewpassword.value = "";
 
@@ -150,7 +160,7 @@ function toggleToastMsg(msgForToast) {
                     </button>
                 </div>
                 <small
-                    class="text-red-500 text-sm"
+                    class="text-red-500 text-sm block max-w-[24rem]"
                     v-show="afterFocusPaswd && passwordWarn()"
                     >Password must have at least 8 characters with the
                     combination of number, lowercase and uppercase
@@ -183,7 +193,7 @@ function toggleToastMsg(msgForToast) {
                     </button>
                 </div>
                 <small
-                    class="text-red-500 text-sm"
+                    class="text-red-500 text-sm block max-w-[24rem]"
                     v-show="confirmnewpassword !== newpassword"
                     >Password does not match!</small
                 >
@@ -196,10 +206,14 @@ function toggleToastMsg(msgForToast) {
                 v-bind:class="{
                     'disabled:cursor-not-allowed opacity-60': preventSubmit(),
                 }"
+                v-if="!isSubmit"
             >
                 <p class="">Login</p>
                 <i class="bi bi-box-arrow-in-right text-lg"></i>
             </button>
+            <div class="w-full h-10 mt-6 grid place-items-center" v-else>
+                <Loading color="indigo" />
+            </div>
         </form>
     </main>
 </template>

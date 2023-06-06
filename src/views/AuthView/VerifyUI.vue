@@ -3,12 +3,14 @@ import { ref, onMounted } from "vue";
 import router from "../../router";
 import ToastMsg from "../../components/ToastMsg.vue";
 import { baseEndpoint } from "../../stores";
+import Loading from "../../components/Loading.vue";
 
 document.title = "Verify Forgot Password - Hireflash";
 
 if (!window.sessionStorage.getItem("verifyId")) {
     router.replace("/auth/forgot-password");
 }
+console.log(window.sessionStorage.getItem("user_email"));
 
 const toBeFocused = ref(null);
 
@@ -37,15 +39,13 @@ function keyupEvent(current, next, previous) {
     }
 }
 
+const isSubmit = ref(false);
+
 //
 async function toChangePassword() {
-    verificationCode.value =
-        num1.value +
-        num2.value +
-        num3.value +
-        num4.value +
-        num5.value +
-        num6.value;
+    verificationCode.value = `${num1.value}${num2.value}${num3.value}${num4.value}${num5.value}${num6.value}`;
+
+    isSubmit.value = true;
 
     const response = await fetch(
         baseEndpoint + "/auth/forgot-password/verify",
@@ -64,7 +64,12 @@ async function toChangePassword() {
     const res = await response.json();
 
     if (response.status !== 200) {
+        isSubmit.value = false;
+
+        toggleToastMsg(res.message);
     } else {
+        isSubmit.value = false;
+
         num1.value = "";
         num2.value = "";
         num3.value = "";
@@ -205,10 +210,14 @@ function toggleToastMsg(msgForToast) {
                 v-bind:class="{
                     'disabled:cursor-not-allowed opacity-60': preventSubmit(),
                 }"
+                v-if="!isSubmit"
             >
                 <p>Next</p>
                 <i class="bi bi-arrow-right text-lg"></i>
             </button>
+            <div class="w-full h-10 mt-6 grid place-items-center" v-else>
+                <Loading color="indigo" />
+            </div>
         </form>
     </main>
 </template>
