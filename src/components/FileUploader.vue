@@ -3,13 +3,6 @@ import * as LR from "@uploadcare/blocks";
 import { onMounted } from "vue";
 
 LR.registerBlocks(LR);
-
-onMounted(() => {
-    document.documentElement.style.setProperty(
-        "--public-key",
-        import.meta.env.VITE_PUBLIC_KEY_UPLOADCARE
-    );
-});
 </script>
 
 <template>
@@ -29,7 +22,7 @@ onMounted(() => {
 
 <style>
 .my-config {
-    --cfg-pubkey: var(--public-key);
+    --cfg-pubkey: "832b31ff90b56495ee63";
     --cfg-img-only: 0;
     --cfg-multiple: 0;
     --cfg-max-local-file-size-bytes: 5242880;
