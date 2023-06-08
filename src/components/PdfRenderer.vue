@@ -131,6 +131,7 @@ onMounted(() => {
             v-bind:href="pdfUrl"
             class="text-indigo-500 hover:underline text-center block my-4"
             download
+            target="_blank"
             >Download resume <i class="bi bi-download"></i
         ></a>
     </div>
