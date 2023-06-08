@@ -49,7 +49,8 @@ onMounted(async () => {
         const response2 = await fetch(
             baseEndpoint +
                 "/job/company/" +
-                router.currentRoute.value.params.companyId,
+                router.currentRoute.value.params.companyId +
+                "?status=Advertised",
             {
                 method: "GET",
                 mode: "cors",
