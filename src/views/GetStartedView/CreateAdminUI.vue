@@ -31,6 +31,7 @@ const email = ref(window.sessionStorage.getItem("user_email"));
 const password = ref("");
 const confirmpassword = ref("");
 const role = ref("");
+const codeName = ref("");
 
 async function toCreateOrg() {
     const response = await fetch(baseEndpoint + "/auth/admin", {
@@ -43,7 +44,7 @@ async function toCreateOrg() {
             email: email.value,
             password: password.value,
             confirmpassword: confirmpassword.value,
-            role: role.value,
+            role: codeName.value,
         }),
     });
 
@@ -249,19 +250,29 @@ function toggleToastMsg(msgForToast) {
                     v-bind:isdisabled="false"
                 >
                     <template
-                        v-for="opt in ['admin', 'admin,hr', 'admin,manager']"
+                        v-for="opt in [
+                            { val: 'admin', disp: 'Account Administrator' },
+                            {
+                                val: 'admin,hr',
+                                disp: 'Account Administrator and HR Officer',
+                            },
+                            {
+                                val: 'admin,manager',
+                                disp: 'Account Administrator and Hiring Manager',
+                            },
+                        ]"
                     >
                         <OptionCustom
-                            v-bind:optionvalue="opt"
-                            v-bind:modelvalue="role"
+                            v-bind:optionvalue="opt.disp"
                             v-on:click="
                                 () => {
-                                    role = opt;
+                                    codeName = opt.val;
+                                    role = opt.disp;
                                 }
                             "
                             v-bind:class="{
                                 'rounded-md shadow-inner bg-indigo-100':
-                                    role === opt,
+                                    codeName === opt.val,
                             }"
                         />
                     </template>
