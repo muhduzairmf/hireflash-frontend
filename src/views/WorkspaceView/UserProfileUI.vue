@@ -6,13 +6,13 @@ import { baseEndpoint, user, officer } from "../../stores";
 import router from "../../router";
 import { getFullRole } from "../../lib/Auth";
 import DialogModal from "../../components/DialogModal.vue";
+import FileUploader from "../../components/FileUploader.vue";
 
 document.title = "User Profile - Hireflash";
 
-const defaultpic = ref(
-    "https://api.dicebear.com/5.x/initials/svg?seed=" +
-        encodeURIComponent(user.value.name) +
-        "&backgroundColor=3730a3&scale=83"
+const imgSrc = ref(
+    user.value.pic ||
+        `https://api.dicebear.com/5.x/initials/svg?seed=${user.value.name}&backgroundColor=3730a3&scale=83`
 );
 const position = ref(getFullRole(officer.value.position));
 const fullname = ref(user.value.name);
@@ -51,64 +51,85 @@ function toggleToastMsg(msgForToast) {
     }, 3000);
 }
 
-function setDefaultProfileImg() {
-    // const response = await fetch(baseEndpoint + "", {
-    //     method: "PATCH",
-    //     mode: "cors",
-    //     headers: { "Content-Type": "application/json" },
-    //     credentials: "same-origin",
-    //     body: JSON.stringify({}),
-    // });
+async function setDefaultProfileImg() {
+    const response = await fetch(
+        baseEndpoint + "/user/" + user.value.id + "/pic",
+        {
+            method: "DELETE",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            // body: JSON.stringify({}),
+        }
+    );
+    const res = await response.json();
+    if (response.status !== 200) {
+        toggleToastMsg(
+            "Failed to change profile image to default. Please try again."
+        );
+    } else {
+        imgSrc.value = `https://api.dicebear.com/5.x/initials/svg?seed=${user.value.name}&backgroundColor=3730a3&scale=83`;
+        user.value.pic = imgSrc.value;
 
-    // const res = await response.json();
+        toggleModalDefault();
 
-    // if (response.status) {
-    // } else {
-    // }
-
-    toggleModalDefault();
-
-    toggleToastMsg("Profile image has been change to default.");
+        toggleToastMsg("Profile image has been change to default.");
+    }
 }
 
-function uploadNewProfileImg() {
-    // const response = await fetch(baseEndpoint + "", {
-    //     method: "PATCH",
-    //     mode: "cors",
-    //     headers: { "Content-Type": "application/json" },
-    //     credentials: "same-origin",
-    //     body: JSON.stringify({}),
-    // });
+async function uploadNewProfileImg(path) {
+    const response = await fetch(
+        baseEndpoint + "/user/" + user.value.id + "/pic",
+        {
+            method: "PATCH",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                path: path,
+            }),
+        }
+    );
+    const res = await response.json();
+    if (response.status !== 200) {
+        toggleToastMsg("Failed to upload new profile image. Please try again.");
+    } else {
+        imgSrc.value = path;
+        user.value.pic = imgSrc.value;
 
-    // const res = await response.json();
+        toggleModelUpload();
 
-    // if (response.status) {
-    // } else {
-    // }
-
-    toggleModelUpload();
-
-    toggleToastMsg("Profile image has been updated.");
+        toggleToastMsg("Profile image has been updated.");
+    }
 }
 
-function saveUserInfo() {
-    // const response = await fetch(baseEndpoint + "", {
-    //     method: "PATCH",
-    //     mode: "cors",
-    //     headers: { "Content-Type": "application/json" },
-    //     credentials: "same-origin",
-    //     body: JSON.stringify({}),
-    // });
+async function saveUserInfo() {
+    const response = await fetch(
+        baseEndpoint + "/user/" + user.value.id + "/info",
+        {
+            method: "PATCH",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                email: email.value,
+                name: fullname.value,
+            }),
+        }
+    );
+    const res = await response.json();
+    if (response.status !== 200) {
+        toggleToastMsg("Failed to update user information. Please try again.");
+    } else {
+        user.value = res.data;
+        imgSrc.value =
+            user.value.pic ||
+            `https://api.dicebear.com/5.x/initials/svg?seed=${user.value.name}&backgroundColor=3730a3&scale=83`;
 
-    // const res = await response.json();
+        changeReadAvailability();
 
-    // if (response.status) {
-    // } else {
-    // }
-
-    changeReadAvailability();
-
-    toggleToastMsg("User information has been updated.");
+        toggleToastMsg("User information has been updated.");
+    }
 }
 
 // A variable for toggling show and hide password
@@ -123,27 +144,31 @@ function togglePassword() {
     }
 }
 
-function saveNewPassword() {
-    // const response = await fetch(baseEndpoint + "", {
-    //     method: "PATCH",
-    //     mode: "cors",
-    //     headers: { "Content-Type": "application/json" },
-    //     credentials: "same-origin",
-    //     body: JSON.stringify({}),
-    // });
-
-    // const res = await response.json();
-
-    // if (response.status) {
-    // } else {
-    // }
-
-    currentpassword.value = "";
-    newpassword.value = "";
-    confirmnewpassword.value = "";
-    afterFocusPaswd.value = false;
-
-    toggleToastMsg("New password has been updated.");
+async function saveNewPassword() {
+    const response = await fetch(
+        baseEndpoint + "/user/" + user.value.id + "/password",
+        {
+            method: "PATCH",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                currentpassword: currentpassword.value,
+                newpassword: newpassword.value,
+                confirmnewpassword: confirmnewpassword.value,
+            }),
+        }
+    );
+    const res = await response.json();
+    if (response.status !== 200) {
+        toggleToastMsg("Failed to update your password. Please try again.");
+    } else {
+        currentpassword.value = "";
+        newpassword.value = "";
+        confirmnewpassword.value = "";
+        afterFocusPaswd.value = false;
+        toggleToastMsg("New password has been updated.");
+    }
 }
 
 // A variable to toggle password rules, after first time on input
@@ -197,6 +222,22 @@ function toggleDeleteSection() {
     }
 }
 
+async function deleteUser() {
+    const response = await fetch(baseEndpoint + "/user/" + user.value.id, {
+        method: "DELETE",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        // body: JSON.stringify({}),
+    });
+    const res = await response.json();
+    if (response.status !== 200) {
+        toggleToastMsg("Failed to delete your account. Please try again.");
+    } else {
+        toggleModalDeleted();
+    }
+}
+
 const isOpenUpload = ref(false);
 
 function toggleModelUpload() {
@@ -208,6 +249,31 @@ const isOpenDefault = ref(false);
 function toggleModalDefault() {
     isOpenDefault.value = !isOpenDefault.value;
 }
+
+const isOpenDeleted = ref(false);
+
+function toggleModalDeleted() {
+    isOpenDeleted.value = !isOpenDeleted.value;
+}
+
+const file = ref({});
+const successUpload = ref(false);
+
+function handleUploaderEvent(e) {
+    const { data: uploadedFiles } = e.detail;
+    file.value = uploadedFiles;
+    console.log(e.detail);
+
+    successUpload.value = true;
+    setTimeout(5000, () => {
+        successUpload.value = false;
+    });
+}
+
+window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+    const dataUpload = e.detail.data[0];
+    await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+});
 </script>
 
 <template>
@@ -223,7 +289,7 @@ function toggleModalDefault() {
                     class="mt-4 flex items-center gap-4 max-md:flex-col max-md:items-start"
                 >
                     <img
-                        v-bind:src="defaultpic"
+                        v-bind:src="imgSrc"
                         alt=""
                         class="border-2 border-indigo-200 rounded-md w-28 h-28"
                     />
@@ -441,7 +507,7 @@ function toggleModalDefault() {
                     </button>
                 </div>
                 <form
-                    v-on:submit.prevent="() => {}"
+                    v-on:submit.prevent="deleteUser()"
                     v-bind:class="{ hidden: hideDeleteSection }"
                 >
                     <p class="font-semibold mt-4">
@@ -495,22 +561,13 @@ function toggleModalDefault() {
         >
             <br />
             <div
-                class="p-60 max-xl:p-40 max-md:p-20 grid place-items-center border-2 border-indigo-200 rounded-md"
+                class="h-[80vh] w-[75vw] max-md:w-screen flex flex-col gap-2 justify-center border-2 border-indigo-200 rounded-md"
             >
-                <button
-                    class="flex flex-col items-center rounded-md bg-indigo-200 hover:bg-indigo-100 p-4"
-                    v-on:click="
-                        () => {
-                            toggleModelUpload();
-                            uploadNewProfileImg();
-                        }
-                    "
-                >
-                    <h1 class="text-4xl">
-                        <i class="bi bi-file-earmark-plus"></i>
-                    </h1>
-                    <p>Click or drag your file here</p>
-                </button>
+                <FileUploader v-on:upload="handleUploaderEvent" />
+                <p class="text-center" v-if="successUpload">
+                    Successfully uploaded your resume. You can close the modal
+                    dialog.
+                </p>
             </div>
         </DialogModal>
         <DialogModal
@@ -533,6 +590,25 @@ function toggleModalDefault() {
                 >
                     Cancel
                 </button>
+            </div>
+        </DialogModal>
+        <DialogModal
+            v-on:toggle="toggleModalDeleted()"
+            v-show="isOpenDeleted"
+            modaltype="small"
+        >
+            <br class="mb-2" />
+            <p>
+                Your account was successfully deleted. Thank you for using
+                Hireflash.
+            </p>
+            <div class="mt-6 flex gap-2">
+                <router-link
+                    class="rounded-md bg-indigo-800 text-gray-50 px-4 py-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
+                    to="/"
+                >
+                    Ok
+                </router-link>
             </div>
         </DialogModal>
     </div>

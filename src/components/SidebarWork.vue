@@ -11,12 +11,6 @@ function logout() {
     router.push("/");
 }
 
-const defaultpic = ref(
-    "https://api.dicebear.com/5.x/initials/svg?seed=" +
-        user.value.name +
-        "&backgroundColor=3730a3&scale=83"
-);
-
 const onlyAdmin = ref(officer.value.position.includes("admin"));
 </script>
 
@@ -125,7 +119,10 @@ const onlyAdmin = ref(officer.value.position.includes("admin"));
             </div>
             <button>
                 <img
-                    v-bind:src="defaultpic"
+                    v-bind:src="
+                        user.pic ||
+                        `https://api.dicebear.com/5.x/initials/svg?seed=${user.name}&backgroundColor=3730a3&scale=83`
+                    "
                     alt=""
                     class="border-2 border-indigo-200 rounded-full w-14 h-14 max-md:w-10 max-md:h-10"
                 />

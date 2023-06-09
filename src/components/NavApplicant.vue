@@ -100,9 +100,10 @@ const showNav = ref(props.shownav);
                     <button class="flex items-center gap-1">
                         <img
                             v-bind:src="
+                                user.pic ||
                                 `https://api.dicebear.com/5.x/initials/svg?seed=` +
-                                user.name +
-                                `&backgroundColor=3730a3&scale=83`
+                                    user.name +
+                                    `&backgroundColor=3730a3&scale=83`
                             "
                             alt=""
                             class="border-2 border-indigo-200 rounded-full w-9 h-9"
