@@ -1,16 +1,21 @@
 <script setup>
 import TitleBorder from "../../components/TitleBorder.vue";
 import { ref } from "vue";
-import { baseEndpoint, company } from "../../stores";
+import { baseEndpoint, company, officer } from "../../stores";
 import router from "../../router";
 import SelectCustom from "../../components/SelectCustom.vue";
 import OptionCustom from "../../components/OptionCustom.vue";
 import { countries } from "../../lib/CountryList";
 import DialogModal from "../../components/DialogModal.vue";
 import ToastMsg from "../../components/ToastMsg.vue";
+import FileUploader from "../../components/FileUploader.vue";
 
 document.title = "Edit Organization - Hireflash";
 
+const imgSrc = ref(
+    company.value.pic ||
+        `https://api.dicebear.com/5.x/initials/svg?seed=${company.value.name}&backgroundColor=3730a3&scale=83`
+);
 const orgname = ref(company.value.name);
 const website = ref(company.value.website);
 const addr1 = ref(company.value.address_line1);
@@ -30,15 +35,15 @@ async function submitEditOrg() {
             headers: { "Content-Type": "application/json" },
             credentials: "same-origin",
             body: JSON.stringify({
-                name: orgName,
-                website: website,
-                description: desc,
-                address_line1: addr1,
-                address_line2: addr2,
-                postal_code: postcode,
-                state: state,
-                city: city,
-                country: country,
+                name: orgName.value,
+                website: website.value,
+                description: desc.value,
+                address_line1: addr1.value,
+                address_line2: addr2.value,
+                postal_code: postcode.value,
+                state: state.value,
+                city: city.value,
+                country: country.value,
             }),
         }
     );
@@ -121,9 +126,32 @@ function toggleDeleteSection() {
     }
 }
 
-// function deleteOrganization() {
+const isOpenDeleted = ref(false);
 
-// }
+function toggleModalDeleted() {
+    isOpenDeleted.value = !isOpenDeleted.value;
+}
+
+async function deleteOrganization() {
+    const response = await fetch(
+        baseEndpoint + "/company/" + company.value.id,
+        {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({}),
+        }
+    );
+
+    const res = await response.json();
+
+    if (response.status !== 200) {
+        toggleToastMsg("Failed to delete organization. Please try again.");
+    } else {
+        toggleModalDeleted();
+    }
+}
 
 const isOpenUpload = ref(false);
 
@@ -135,6 +163,58 @@ const isOpenDefault = ref(false);
 
 function toggleModalDefault() {
     isOpenDefault.value = !isOpenDefault.value;
+}
+
+async function setDefaultProfileImg() {
+    const response = await fetch(
+        baseEndpoint + "/company/" + company.value.id + "/pic",
+        {
+            method: "DELETE",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            // body: JSON.stringify({}),
+        }
+    );
+    const res = await response.json();
+    if (response.status !== 200) {
+        toggleToastMsg(
+            "Failed to change company logo to default. Please try again."
+        );
+    } else {
+        imgSrc.value = `https://api.dicebear.com/5.x/initials/svg?seed=${company.value.name}&backgroundColor=3730a3&scale=83`;
+        company.value.pic = imgSrc.value;
+
+        toggleModalDefault();
+
+        toggleToastMsg("Company logo has been change to default.");
+    }
+}
+
+async function uploadNewProfileImg(path) {
+    const response = await fetch(
+        baseEndpoint + "/company/" + company.value.id + "/pic",
+        {
+            method: "PATCH",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                path: path,
+            }),
+        }
+    );
+    const res = await response.json();
+    if (response.status !== 200) {
+        toggleToastMsg("Failed to upload new company logo. Please try again.");
+    } else {
+        imgSrc.value = path;
+        company.value.pic = imgSrc.value;
+
+        toggleModelUpload();
+
+        toggleToastMsg("Company logo has been updated.");
+    }
 }
 
 const showToastMsg = ref(false);
@@ -149,6 +229,25 @@ function toggleToastMsg(msgForToast) {
         toastMsg.value = "";
     }, 3000);
 }
+
+const file = ref({});
+const successUpload = ref(false);
+
+function handleUploaderEvent(e) {
+    const { data: uploadedFiles } = e.detail;
+    file.value = uploadedFiles;
+    console.log(e.detail);
+
+    successUpload.value = true;
+    setTimeout(5000, () => {
+        successUpload.value = false;
+    });
+}
+
+window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+    const dataUpload = e.detail.data[0];
+    await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+});
 </script>
 
 <template>
@@ -172,7 +271,7 @@ function toggleToastMsg(msgForToast) {
                 class="mt-4 flex items-center gap-4 max-md:flex-col max-md:items-start"
             >
                 <img
-                    v-bind:src="company.pic"
+                    v-bind:src="imgSrc"
                     alt=""
                     class="border-2 border-indigo-200 rounded-md w-28 h-28"
                 />
@@ -363,7 +462,7 @@ function toggleToastMsg(msgForToast) {
                     </button>
                 </div>
                 <form
-                    v-on:submit.prevent="() => {}"
+                    v-on:submit.prevent="deleteOrganization()"
                     v-bind:class="{ hidden: hideDeleteSection }"
                 >
                     <p class="font-semibold mt-4">
@@ -421,22 +520,13 @@ function toggleToastMsg(msgForToast) {
         >
             <br />
             <div
-                class="p-60 max-xl:p-40 max-md:p-20 grid place-items-center border-2 border-indigo-200 rounded-md"
+                class="h-[80vh] w-[75vw] max-md:w-screen flex flex-col gap-2 justify-center border-2 border-indigo-200 rounded-md"
             >
-                <button
-                    class="flex flex-col items-center rounded-md bg-indigo-200 hover:bg-indigo-100 p-4"
-                    v-on:click="
-                        () => {
-                            toggleModelUpload();
-                            uploadNewProfileImg();
-                        }
-                    "
-                >
-                    <h1 class="text-4xl">
-                        <i class="bi bi-file-earmark-plus"></i>
-                    </h1>
-                    <p>Click or drag your file here</p>
-                </button>
+                <FileUploader v-on:upload="handleUploaderEvent" />
+                <p class="text-center" v-if="successUpload">
+                    Successfully uploaded your resume. You can close the modal
+                    dialog.
+                </p>
             </div>
         </DialogModal>
         <DialogModal
@@ -459,6 +549,25 @@ function toggleToastMsg(msgForToast) {
                 >
                     Cancel
                 </button>
+            </div>
+        </DialogModal>
+        <DialogModal
+            v-on:toggle="toggleModalDeleted()"
+            v-show="isOpenDeleted"
+            modaltype="small"
+        >
+            <br class="mb-2" />
+            <p>
+                Your account was successfully deleted. Thank you for using
+                Hireflash.
+            </p>
+            <div class="mt-6 flex gap-2">
+                <router-link
+                    class="rounded-md bg-indigo-800 text-gray-50 px-4 py-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
+                    to="/"
+                >
+                    Ok
+                </router-link>
             </div>
         </DialogModal>
     </div>
