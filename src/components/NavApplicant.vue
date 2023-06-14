@@ -279,16 +279,16 @@ const showNav = ref(props.shownav);
         v-show="showNav"
     >
         <router-link
+            to="/profile/inbox"
+            class="py-1 px-4 rounded-md hover:shadow-inner"
+        >
+            <i class="bi bi-envelope text-lg"></i>
+        </router-link>
+        <router-link
             to="/profile/applied-job"
             class="py-1 px-4 rounded-md hover:shadow-inner"
         >
             <i class="bi bi-folder-check text-lg"></i>
-        </router-link>
-        <router-link
-            to="/profile/wishlist"
-            class="py-1 px-4 rounded-md hover:shadow-inner"
-        >
-            <i class="bi bi-stickies text-lg"></i>
         </router-link>
         <router-link
             to="/job/search"
