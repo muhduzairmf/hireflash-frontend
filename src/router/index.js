@@ -82,6 +82,21 @@ const router = createRouter({
                         import("../views/ApplicantView/NotificationUI.vue"),
                 },
                 {
+                    path: "inbox",
+                    component: () =>
+                        import("../views/ApplicantView/InboxUI.vue"),
+                },
+                {
+                    path: "inbox/message",
+                    component: () =>
+                        import("../views/ApplicantView/RedirectInboxUI.vue"),
+                },
+                {
+                    path: "inbox/message/:receiverId",
+                    component: () =>
+                        import("../views/ApplicantView/MessageUI.vue"),
+                },
+                {
                     path: "user-info",
                     component: () =>
                         import("../views/ApplicantView/UserProfileUI.vue"),

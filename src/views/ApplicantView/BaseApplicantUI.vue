@@ -124,6 +124,12 @@ function toggleToastMsg(msgForToast) {
                         <i class="bi bi-bell"></i>&nbsp;&nbsp; Notifications
                     </router-link>
                     <router-link
+                        to="/profile/inbox"
+                        class="py-2 px-4 text-left rounded-md hover:shadow-inner hover:bg-indigo-100"
+                    >
+                        <i class="bi bi-envelope"></i>&nbsp;&nbsp; Inbox
+                    </router-link>
+                    <router-link
                         to="/profile/user-info"
                         class="py-2 px-4 text-left rounded-md hover:shadow-inner hover:bg-indigo-100"
                     >
