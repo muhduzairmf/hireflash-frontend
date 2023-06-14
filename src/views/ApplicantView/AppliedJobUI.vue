@@ -253,6 +253,13 @@ function toggleModalPreview() {
                 </div>
             </div>
         </div>
+        <div class="mb-8 hidden max-md:block">
+            <router-link
+                class="text-indigo-500 hover:underline cursor-pointer select-none"
+                to="/profile/wishlist"
+                >Go to Wishlist&nbsp;<i class="bi bi-arrow-right"></i
+            ></router-link>
+        </div>
         <DialogModal
             v-on:toggle="toggleModalRemove()"
             v-show="isOpenRemove"
