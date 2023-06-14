@@ -30,7 +30,7 @@ onMounted(async () => {
             <div class="my-6">
                 <router-link
                     to="/workspace/inbox/message/89hvbwug4wc"
-                    class="flex justify-between items-center px-6 py-4 rounded-md relative hover:shadow-inner hover:bg-indigo-100 max-md:px-0 max-md:py-2"
+                    class="flex justify-between items-center px-6 py-4 rounded-md relative hover:shadow-inner hover:bg-indigo-100 max-md:px-2 max-md:py-2"
                 >
                     <div
                         class="flex items-center gap-4 max-md:gap-1 max-md:items-start max-md:flex-col"
