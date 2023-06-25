@@ -20,7 +20,7 @@ const gender = ref("");
 const preferred_location = ref("");
 const date_of_birth = ref("");
 const nationality = ref("");
-const preferred_salary = ref("");
+const preferred_salary = ref(0);
 const about = ref("");
 
 const isSubmit = ref(false);
