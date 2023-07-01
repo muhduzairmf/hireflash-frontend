@@ -32,13 +32,48 @@ async function toVerify() {
 
         toggleToastMsg(res.message);
     } else {
-        isSubmit.value = false;
+        const data = {
+            service_id: import.meta.env.VITE_EMAILJS_SERVICEID,
+            template_id: import.meta.env.VITE_EMAILJS_TEMPLATEID,
+            user_id: import.meta.env.VITE_EMAILJS_USERID,
+            accessToken: import.meta.env.VITE_EMAILJS_ACCESSTOKEN,
+            template_params: {
+                subject: "Verification Code",
+                content: `Your verification code is ${res.data.verificationCode}. \n Please do not share with others.`,
+                receiverEmail: email.value,
+            },
+        };
 
-        window.sessionStorage.setItem("verifyId", res.data.id);
-        window.sessionStorage.setItem("user_email", email.value);
-        email.value = "";
+        fetch("https://api.emailjs.com/api/v1.0/email/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    isSubmit.value = false;
 
-        router.push("/auth/forgot-password/verify");
+                    window.sessionStorage.setItem("verifyId", res.data.id);
+                    window.sessionStorage.setItem("user_email", email.value);
+
+                    email.value = "";
+
+                    router.push("/auth/forgot-password/verify");
+                } else {
+                    toggleToastMsg(
+                        "Failed to send verification code to given email."
+                    );
+                    throw new Error("Request failed.");
+                }
+            })
+            .catch((error) => {
+                toggleToastMsg(
+                    "Failed to send verification code to given email."
+                );
+                console.log("Oops... " + error.message);
+            });
     }
 }
 

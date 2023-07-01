@@ -8,8 +8,12 @@ document.title = "Get Started - Hireflash";
 
 const email = ref("");
 
+const isSubmit = ref(false);
+
 //
 async function toVerify() {
+    isSubmit.value = true;
+
     const response = await fetch(baseEndpoint + "/auth/get-started/email", {
         method: "POST",
         mode: "cors",
@@ -23,14 +27,52 @@ async function toVerify() {
     const res = await response.json();
 
     if (response.status !== 200) {
+        isSubmit.value = false;
+
         toggleToastMsg("Failed to continue. Please try again.");
     } else {
-        window.sessionStorage.setItem("verifyId", res.data.id);
-        window.sessionStorage.setItem("user_email", email.value);
+        const data = {
+            service_id: import.meta.env.VITE_EMAILJS_SERVICEID,
+            template_id: import.meta.env.VITE_EMAILJS_TEMPLATEID,
+            user_id: import.meta.env.VITE_EMAILJS_USERID,
+            accessToken: import.meta.env.VITE_EMAILJS_ACCESSTOKEN,
+            template_params: {
+                subject: "Verification Code",
+                content: `Your verification code is ${res.data.verificationCode}. \n Please do not share with others.`,
+                receiverEmail: email.value,
+            },
+        };
 
-        email.value = "";
+        fetch("https://api.emailjs.com/api/v1.0/email/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    isSubmit.value = false;
 
-        router.push("/get-started/verify");
+                    window.sessionStorage.setItem("verifyId", res.data.id);
+                    window.sessionStorage.setItem("user_email", email.value);
+
+                    email.value = "";
+
+                    router.push("/get-started/verify");
+                } else {
+                    toggleToastMsg(
+                        "Failed to send verification code to given email."
+                    );
+                    throw new Error("Request failed.");
+                }
+            })
+            .catch((error) => {
+                toggleToastMsg(
+                    "Failed to send verification code to given email."
+                );
+                console.log("Oops... " + error.message);
+            });
     }
 }
 
