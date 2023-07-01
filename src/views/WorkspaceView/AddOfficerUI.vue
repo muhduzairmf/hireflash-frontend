@@ -16,7 +16,11 @@ const codenameRole = ref("");
 const inviteLink = ref("");
 const hideLoading = ref(true);
 
+const isSubmit = ref(false);
+
 async function sendInvite() {
+    isSubmit.value = true;
+
     const response = await fetch(baseEndpoint + "/auth/link", {
         method: "POST",
         mode: "cors",
@@ -33,9 +37,51 @@ async function sendInvite() {
     const res = await response.json();
 
     if (response.status !== 201) {
+        isSubmit.value = false;
+
         toggleToastMsg("Invitation link failed to send. Please try again.");
     } else {
-        toggleToastMsg(res.message);
+        const data = {
+            service_id: import.meta.env.VITE_EMAILJS_SERVICEID,
+            template_id: import.meta.env.VITE_EMAILJS_TEMPLATEID,
+            user_id: import.meta.env.VITE_EMAILJS_USERID,
+            accessToken: import.meta.env.VITE_EMAILJS_ACCESSTOKEN,
+            template_params: {
+                subject: "Invitation Link",
+                content: `Admin has invited you to join ${company.value.name} \n\n ${res.data.link} \n\n Please ignore this email if it is not dedicated for you.`,
+                receiverEmail: officerEmail.value,
+            },
+        };
+
+        fetch("https://api.emailjs.com/api/v1.0/email/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    isSubmit.value = false;
+
+                    toggleToastMsg(res.message);
+                } else {
+                    isSubmit.value = false;
+
+                    toggleToastMsg(
+                        "Invitation link failed to send. Please try again."
+                    );
+                    throw new Error("Request failed.");
+                }
+            })
+            .catch((error) => {
+                isSubmit.value = false;
+
+                toggleToastMsg(
+                    "Invitation link failed to send. Please try again."
+                );
+                console.log("Oops... " + error.message);
+            });
     }
 }
 
@@ -172,7 +218,7 @@ function toggleToastMsg(msgForToast) {
                     v-model="officerEmail"
                 />
             </div>
-            <div class="mt-6 flex gap-2 max-md:flex-col">
+            <div class="mt-6 flex gap-2 max-md:flex-col" v-if="!isSubmit">
                 <button
                     class="rounded-md bg-indigo-800 text-gray-50 px-4 py-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
                     type="button"
@@ -197,6 +243,9 @@ function toggleToastMsg(msgForToast) {
                 >
                     Generate link
                 </button>
+            </div>
+            <div class="mt-6 flex gap-2 max-md:flex-col" v-else>
+                <Loading color="indigo" />
             </div>
             <div class="mt-8 max-w-lg">
                 <label class="mb-2 block">Invitation Link</label>
