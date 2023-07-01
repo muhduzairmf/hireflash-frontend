@@ -38,7 +38,7 @@ async function toVerify() {
             accessToken: import.meta.env.VITE_EMAILJS_ACCESSTOKEN,
             template_params: {
                 subject: "Verification Code",
-                content: `Your verification code is ${res.data.verificationCode}. \n Please do not share with others.`,
+                content: `Your verification code is ${res.data.verificationCode}. \n\n Please do not share with others.`,
                 receiverEmail: email.value,
             },
         };
@@ -138,10 +138,14 @@ function toggleToastMsg(msgForToast) {
                 v-bind:class="{
                     'disabled:cursor-not-allowed opacity-60': preventSubmit(),
                 }"
+                v-if="!isSubmit"
             >
                 <p>Next</p>
                 <i class="bi bi-arrow-right text-lg"></i>
             </button>
+            <div class="w-full h-10 mt-6 grid place-items-center" v-else>
+                <Loading color="indigo" />
+            </div>
         </form>
     </main>
 </template>
