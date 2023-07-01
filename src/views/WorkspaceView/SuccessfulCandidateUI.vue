@@ -372,7 +372,11 @@ function textareaResize() {
                             Resume
                         </h4>
                         <ul class="list-disc list-inside px-2">
-                            <li>
+                            <li
+                                v-if="
+                                    success.candidate_profile.resume.length > 0
+                                "
+                            >
                                 <span
                                     class="text-indigo-500 cursor-pointer select-none"
                                     v-on:click="toggleModelResume()"
@@ -382,6 +386,7 @@ function textareaResize() {
                                     ></i>
                                 </span>
                             </li>
+                            <li v-else>-</li>
                         </ul>
                     </div>
                     <div class="mb-4">
@@ -520,6 +525,7 @@ function textareaResize() {
             </DialogModal>
             <!-- for displaying resume -->
             <DialogModal
+                v-if="success.candidate_profile.resume.length > 0"
                 v-on:toggle="toggleModelResume()"
                 v-show="isOpenResume"
                 modaltype="big"
