@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import TitleBorder from "../../components/TitleBorder.vue";
 import ToastMsg from "../../components/ToastMsg.vue";
 import { baseEndpoint, candidate_profile, user } from "../../stores";
@@ -13,6 +13,13 @@ import * as LR from "@uploadcare/blocks";
 LR.registerBlocks(LR);
 
 document.title = "User Information - Hireflash";
+
+onMounted(() => {
+    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+        const dataUpload = e.detail.data[0];
+        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+    });
+});
 
 const imgSrc = ref(
     user.value.pic ||
@@ -296,12 +303,12 @@ function handleUploaderEvent(e) {
     });
 }
 
-onBeforeUnmount(() => {
-    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
-        const dataUpload = e.detail.data[0];
-        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
-    });
-});
+// onBeforeUnmount(() => {
+//     window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+//         const dataUpload = e.detail.data[0];
+//         await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+//     });
+// });
 </script>
 
 <template>

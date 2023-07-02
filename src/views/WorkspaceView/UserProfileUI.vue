@@ -13,6 +13,13 @@ LR.registerBlocks(LR);
 
 document.title = "User Profile - Hireflash";
 
+onMounted(() => {
+    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+        const dataUpload = e.detail.data[0];
+        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+    });
+});
+
 const imgSrc = ref(
     user.value.pic ||
         `https://api.dicebear.com/5.x/initials/svg?seed=${user.value.name}&backgroundColor=3730a3&scale=83`
@@ -273,12 +280,12 @@ function handleUploaderEvent(e) {
     });
 }
 
-onBeforeUnmount(() => {
-    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
-        const dataUpload = e.detail.data[0];
-        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
-    });
-});
+// onBeforeUnmount(() => {
+//     window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+//         const dataUpload = e.detail.data[0];
+//         await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+//     });
+// });
 </script>
 
 <template>

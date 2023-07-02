@@ -1,6 +1,6 @@
 <script setup>
 import TitleBorder from "../../components/TitleBorder.vue";
-import { onBeforeUnmount, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { baseEndpoint, company, officer } from "../../stores";
 import router from "../../router";
 import SelectCustom from "../../components/SelectCustom.vue";
@@ -14,6 +14,13 @@ import * as LR from "@uploadcare/blocks";
 LR.registerBlocks(LR);
 
 document.title = "Edit Organization - Hireflash";
+
+onMounted(() => {
+    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+        const dataUpload = e.detail.data[0];
+        await uploadNewPicImg(dataUpload.cdnUrl + dataUpload.name);
+    });
+});
 
 const imgSrc = ref(
     company.value.pic ||
@@ -194,7 +201,7 @@ async function setDefaultProfileImg() {
     }
 }
 
-async function uploadNewProfileImg(path) {
+async function uploadNewPicImg(path) {
     const response = await fetch(
         baseEndpoint + "/company/" + company.value.id + "/pic",
         {
@@ -247,12 +254,12 @@ function handleUploaderEvent(e) {
     });
 }
 
-onBeforeUnmount(() => {
-    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
-        const dataUpload = e.detail.data[0];
-        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
-    });
-});
+// onBeforeUnmount(() => {
+//     window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+//         const dataUpload = e.detail.data[0];
+//         await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+//     });
+// });
 </script>
 
 <template>
