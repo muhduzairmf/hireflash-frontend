@@ -7,6 +7,9 @@ import { baseEndpoint, candidate_profile } from "../../stores";
 import PdfRenderer from "../../components/PdfRenderer.vue";
 import FileUploader from "../../components/FileUploader.vue";
 import Loading from "../../components/Loading.vue";
+import * as LR from "@uploadcare/blocks";
+
+LR.registerBlocks(LR);
 
 document.title = "Resume - Hireflash";
 
@@ -230,7 +233,19 @@ window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
         <div
             class="h-[80vh] w-[75vw] max-md:w-screen flex flex-col gap-2 justify-center border-2 border-indigo-200 rounded-md"
         >
-            <FileUploader v-on:upload="handleUploaderEvent" />
+            <!-- <FileUploader v-on:upload="handleUploaderEvent" /> -->
+            <lr-file-uploader-inline
+                css-src="https://esm.sh/@uploadcare/blocks@0.22.3/web/file-uploader-regular.min.css"
+                ctx-name="my-uploader"
+                class="my-config"
+            >
+                <lr-data-output
+                    @lr-data-output="$emit('upload')"
+                    use-event
+                    hidden
+                    class="my-config"
+                ></lr-data-output>
+            </lr-file-uploader-inline>
             <p class="text-center" v-if="successUpload">
                 Successfully uploaded your resume. You can close the modal
                 dialog.
@@ -260,3 +275,24 @@ window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
         </div>
     </DialogModal>
 </template>
+
+<style>
+.my-config {
+    --cfg-pubkey: "832b31ff90b56495ee63";
+    --cfg-img-only: 0;
+    --cfg-multiple: 0;
+    --cfg-max-local-file-size-bytes: 5242880;
+    --cfg-multiple-max: 1;
+    --cfg-use-cloud-image-editor: 1;
+    --cfg-source-list: "local, camera";
+    --cfg-confirm-upload: 1;
+    --cfg-show-empty-list: 1;
+    --darkmode: 0;
+    --h-accent: 243;
+    --s-accent: 75%;
+    --l-accent: 59%;
+    --h-background: 226;
+    --s-background: 100%;
+    --l-background: 97;
+}
+</style>
