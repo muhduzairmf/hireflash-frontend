@@ -24,27 +24,28 @@ onMounted(async () => {
 const notificationList = ref([
     {
         id: "abcd126",
-        content: "CyberSecurity Analyst from Umbrella Inc. has been closed.",
+        content:
+            "CyberSecurity Analyst position has been created with Waiting Approval status.",
         category: "recruit",
         isRead: false,
     },
     {
         id: "abcd125",
         content:
-            "You have been listed in Interview List! (CyberSecurity Analyst from Umbrella Inc.)",
+            "Recruitment status for CyberSecurity Analyst has been updated. (Approved)",
         category: "listed",
         isRead: true,
     },
     {
         id: "abcd124",
         content:
-            "You have been listed in Shortlist! (CyberSecurity Analyst from Umbrella Inc.)",
+            "Recruitment status for CyberSecurity Analyst has been updated. (Advertised)",
         category: "listed",
         isRead: true,
     },
     {
         id: "abcd123",
-        content: "HR Officer from Umbrella Inc. has viewed your resume",
+        content: "James Bond has been invited to Umbrella Inc. as HR Officer.",
         category: "view",
         isRead: true,
     },
