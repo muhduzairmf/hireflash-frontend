@@ -7,7 +7,7 @@ const props = defineProps({
 });
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.6.172/pdf.worker.min.js";
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.7.107/pdf.worker.min.js";
 
 const pdfUrl = ref(props.link);
 let pdfDoc = null;
