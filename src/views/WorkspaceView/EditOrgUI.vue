@@ -1,6 +1,6 @@
 <script setup>
 import TitleBorder from "../../components/TitleBorder.vue";
-import { ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 import { baseEndpoint, company, officer } from "../../stores";
 import router from "../../router";
 import SelectCustom from "../../components/SelectCustom.vue";
@@ -247,9 +247,11 @@ function handleUploaderEvent(e) {
     });
 }
 
-window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
-    const dataUpload = e.detail.data[0];
-    await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+onBeforeUnmount(() => {
+    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+        const dataUpload = e.detail.data[0];
+        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+    });
 });
 </script>
 

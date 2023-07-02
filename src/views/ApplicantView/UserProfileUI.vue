@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 import TitleBorder from "../../components/TitleBorder.vue";
 import ToastMsg from "../../components/ToastMsg.vue";
 import { baseEndpoint, candidate_profile, user } from "../../stores";
@@ -296,9 +296,11 @@ function handleUploaderEvent(e) {
     });
 }
 
-window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
-    const dataUpload = e.detail.data[0];
-    await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+onBeforeUnmount(() => {
+    window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
+        const dataUpload = e.detail.data[0];
+        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+    });
 });
 </script>
 
