@@ -100,8 +100,11 @@ function toggleModalRemove() {
 async function removeFromWishlist(job_id) {
     toggleModalRemove();
 
+    isLoaded.value = false;
+
     const response = await fetch(
-        baseEndpoint + `/wishlist/${candidate_profile.value.id}/${job_id}`,
+        baseEndpoint +
+            `/applicant/wishlist/${candidate_profile.value.id}/${job_id}`,
         {
             method: "DELETE",
             mode: "cors",
@@ -116,6 +119,19 @@ async function removeFromWishlist(job_id) {
     if (response.status !== 200) {
         toggleToastMsg("Failed to remove from Wishlist");
     } else {
+        jobList.value = jobList.value.filter((job) => job.id !== job_id);
+        availabilityStatus.value = [];
+        jobList.value.forEach((job) => {
+            if (job.recruitment_status === "Advertised") {
+                availabilityStatus.value = [
+                    ...availabilityStatus.value,
+                    "applicable",
+                ];
+            } else {
+                availabilityStatus.value = [...availabilityStatus.value, "not"];
+            }
+        });
+        isLoaded.value = true;
         toggleToastMsg("Successfully removed from Wishlist");
     }
 }
@@ -170,7 +186,7 @@ function toggleModalPreview() {
                                                 }
                                             "
                                         >
-                                            Remove from Applied History
+                                            Remove from Wishlist
                                         </button>
                                     </div>
                                 </div>
@@ -244,7 +260,10 @@ function toggleModalPreview() {
                 class="grid grid-cols-[1fr,1fr] gap-4 mt-4 max-w-3xl max-md:grid-cols-1"
             >
                 <div class="border-2 border-indigo-200 rounded-md p-4">
-                    <h2 class="text-4xl text-center">
+                    <div class="grid place-items-center" v-if="!isLoaded">
+                        <Loading color="indigo" />
+                    </div>
+                    <h2 class="text-4xl text-center" v-else>
                         {{
                             availabilityStatus.filter(
                                 (avStatus) => avStatus === "applicable"
@@ -254,7 +273,10 @@ function toggleModalPreview() {
                     <p class="mt-2 text-center">Still applicable</p>
                 </div>
                 <div class="border-2 border-indigo-200 rounded-md p-4">
-                    <h2 class="text-4xl text-center">
+                    <div class="grid place-items-center" v-if="!isLoaded">
+                        <Loading color="indigo" />
+                    </div>
+                    <h2 class="text-4xl text-center" v-else>
                         {{
                             availabilityStatus.filter(
                                 (avStatus) => avStatus === "not"

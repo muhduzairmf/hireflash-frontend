@@ -97,8 +97,11 @@ function toggleModalRemove() {
 async function removeFromAppliedHistory(job_id) {
     toggleModalRemove();
 
+    isLoaded.value = false;
+
     const response = await fetch(
-        baseEndpoint + `/applied-job/${candidate_profile.value.id}/${job_id}`,
+        baseEndpoint +
+            `/applicant/applied-job/${candidate_profile.value.id}/${job_id}`,
         {
             method: "DELETE",
             mode: "cors",
@@ -113,6 +116,22 @@ async function removeFromAppliedHistory(job_id) {
     if (response.status !== 200) {
         toggleToastMsg("Failed to remove from Applied History");
     } else {
+        jobList.value = jobList.value.filter((job) => job.id !== job_id);
+        applicationStatus.value = [];
+        appliedJob.value = appliedJob.value.filter(
+            (appl) => appl.job_id !== job_id
+        );
+        appliedJob.value.forEach((appl) => {
+            if (appl.is_viewed) {
+                applicationStatus.value = [
+                    ...applicationStatus.value,
+                    "under review",
+                ];
+            } else {
+                applicationStatus.value = [...applicationStatus.value, "sent"];
+            }
+        });
+        isLoaded.value = true;
         toggleToastMsg("Successfully removed from Applied History");
     }
 }
@@ -241,7 +260,10 @@ function toggleModalPreview() {
                 class="grid grid-cols-[1fr,1fr] gap-4 mt-4 max-w-3xl max-md:grid-cols-1"
             >
                 <div class="border-2 border-indigo-200 rounded-md p-4">
-                    <h2 class="text-4xl text-center">
+                    <div class="grid place-items-center" v-if="!isLoaded">
+                        <Loading color="indigo" />
+                    </div>
+                    <h2 class="text-4xl text-center" v-else>
                         {{
                             applicationStatus.filter(
                                 (applStatus) => applStatus === "sent"
@@ -251,7 +273,10 @@ function toggleModalPreview() {
                     <p class="mt-2 text-center">Sent</p>
                 </div>
                 <div class="border-2 border-indigo-200 rounded-md p-4">
-                    <h2 class="text-4xl text-center">
+                    <div class="grid place-items-center" v-if="!isLoaded">
+                        <Loading color="indigo" />
+                    </div>
+                    <h2 class="text-4xl text-center" v-else>
                         {{
                             applicationStatus.filter(
                                 (applStatus) => applStatus === "under review"
