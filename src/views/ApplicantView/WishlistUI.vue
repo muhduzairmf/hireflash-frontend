@@ -9,6 +9,7 @@ import Loading from "../../components/Loading.vue";
 document.title = "Wishlist - Hireflash";
 
 const isLoaded = ref(false);
+const jobIdFocused = ref("");
 
 onMounted(async () => {
     const response = await fetch(
@@ -96,22 +97,27 @@ function toggleModalRemove() {
     isOpenRemove.value = !isOpenRemove.value;
 }
 
-function removeFromWishlist() {
+async function removeFromWishlist(job_id) {
     toggleModalRemove();
 
-    // const response = await fetch(baseEndpoint + "", {
-    //     method: "DELETE",
-    //     mode: "cors",
-    //     headers: { "Content-Type": "application/json" },
-    //     credentials: "same-origin",
-    //     body: JSON.stringify({}),
-    // });
-    // const res = await response.json();
-    // if (response.status) {
-    // } else {
-    // }
+    const response = await fetch(
+        baseEndpoint + `/wishlist/${candidate_profile.value.id}/${job_id}`,
+        {
+            method: "DELETE",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            // body: JSON.stringify({}),
+        }
+    );
 
-    toggleToastMsg("Successfully removed from Wishlist");
+    const res = await response.json();
+
+    if (response.status !== 200) {
+        toggleToastMsg("Failed to remove from Wishlist");
+    } else {
+        toggleToastMsg("Successfully removed from Wishlist");
+    }
 }
 
 const isOpenPreview = ref(false);
@@ -157,7 +163,12 @@ function toggleModalPreview() {
                                         </button>
                                         <button
                                             class="py-2 px-4 text-left hover:rounded-md hover:shadow-inner hover:bg-indigo-100"
-                                            v-on:click="toggleModalRemove()"
+                                            v-on:click="
+                                                () => {
+                                                    jobIdFocused = job.id;
+                                                    toggleModalRemove();
+                                                }
+                                            "
                                         >
                                             Remove from Applied History
                                         </button>
@@ -271,13 +282,18 @@ function toggleModalPreview() {
             <div class="mt-6 flex gap-2">
                 <button
                     class="rounded-md bg-indigo-800 text-gray-50 px-4 py-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
-                    v-on:click="removeFromWishlist()"
+                    v-on:click="removeFromWishlist(jobIdFocused)"
                 >
                     Yes
                 </button>
                 <button
                     class="rounded-md bg-gray-50 border-2 border-indigo-800 text-indigo-800 px-4 py-2 transition ease-in-out focus:scale-95 hover:-translate-y-1"
-                    v-on:click="toggleModalRemove()"
+                    v-on:click="
+                        () => {
+                            jobIdFocused = '';
+                            toggleModalRemove();
+                        }
+                    "
                 >
                     Cancel
                 </button>
