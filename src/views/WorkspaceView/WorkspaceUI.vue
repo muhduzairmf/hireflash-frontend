@@ -29,7 +29,7 @@ onMounted(async () => {
         alert("error occured");
         return;
     } else {
-        recruitList.value = res.data;
+        recruitList.value = res.data.jobList;
 
         const response2 = await fetch(
             baseEndpoint + "/officer/company/" + company.value.id,
