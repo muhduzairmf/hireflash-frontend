@@ -90,8 +90,32 @@ async function applyJob(job_id) {
 
     const res = await response.json();
 
-    if (response.status !== 201) {
+    if (response.status !== 201 && response.status !== 409) {
         toggleToastMsg("Failed to apply the job. Please try again.");
+    } else if (response.status === 409) {
+        const response2 = await fetch(
+            baseEndpoint +
+                "/applicant" +
+                `/${job_id}/${candidate_profile.value.id}/apply-status`,
+            {
+                method: "PATCH",
+                mode: "cors",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify({
+                    is_only_wish: false,
+                }),
+            }
+        );
+
+        const res2 = await response2.json();
+
+        if (response2.status !== 200) {
+            toggleToastMsg("Failed to apply the job. Please try again.");
+        } else {
+            toggleModalApply();
+            toggleToastMsg("You have successfully apply this job!");
+        }
     } else {
         toggleModalApply();
         toggleToastMsg("You have successfully apply this job!");
