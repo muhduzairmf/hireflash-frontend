@@ -2,12 +2,12 @@
 import { onMounted, ref } from "vue";
 import TitleBorder from "../../components/TitleBorder.vue";
 import ToastMsg from "../../components/ToastMsg.vue";
-import { baseEndpoint, candidate_profile } from "../../stores";
+import { baseEndpoint, candidate_profile, user } from "../../stores";
 
 document.title = "Notifications - Hireflash";
 
 onMounted(async () => {
-    // const response = await fetch(baseEndpoint + "", {
+    // const response = await fetch(baseEndpoint + "/notification/" + user.value.id, {
     //     method: "GET",
     //     mode: "cors",
     //     headers: { "Content-Type": "application/json" },
@@ -15,7 +15,7 @@ onMounted(async () => {
     //     body: JSON.stringify({}),
     // });
     // const res = await response.json();
-    // if (response.status) {
+    // if (response.status !== 200) {
     // } else {
     // }
 });
@@ -51,7 +51,7 @@ const notificationList = ref([
 
 // function to make a notification status to true (has read)
 function wasRead(notificationId) {
-    // const response = await fetch(baseEndpoint + "", {
+    // const response = await fetch(baseEndpoint + "/notification/" + notificationId, {
     //     method: "PATCH",
     //     mode: "cors",
     //     headers: { "Content-Type": "application/json" },
@@ -59,7 +59,7 @@ function wasRead(notificationId) {
     //     body: JSON.stringify({}),
     // });
     // const res = await response.json();
-    // if (response.status) {
+    // if (response.status !== 200) {
     // } else {
     notificationList.value.forEach((noti) => {
         if (noti.id === notificationId) {
@@ -82,7 +82,7 @@ const disableBtn = ref(
 
 // function to make all notifications status to true (has read)
 function readAll() {
-    // const response = await fetch(baseEndpoint + "", {
+    // const response = await fetch(baseEndpoint + "/notification/user/" + user.value.id, {
     //     method: "PATCH",
     //     mode: "cors",
     //     headers: { "Content-Type": "application/json" },
@@ -90,7 +90,7 @@ function readAll() {
     //     body: JSON.stringify({}),
     // });
     // const res = await response.json();
-    // if (response.status) {
+    // if (response.status !== 200) {
     // } else {
     // notificationList.value.forEach((noti) => {
     //     if (noti.isRead === false) {

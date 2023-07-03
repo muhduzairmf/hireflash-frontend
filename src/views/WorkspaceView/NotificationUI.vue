@@ -8,7 +8,7 @@ import router from "../../router";
 document.title = "Notifications - Hireflash";
 
 onMounted(async () => {
-    // const response = await fetch(baseEndpoint + "", {
+    // const response = await fetch(baseEndpoint + "/notification/" + user.value.id, {
     //     method: "GET",
     //     mode: "cors",
     //     headers: { "Content-Type": "application/json" },
@@ -16,7 +16,7 @@ onMounted(async () => {
     //     body: JSON.stringify({}),
     // });
     // const res = await response.json();
-    // if (response.status) {
+    // if (response.status !== 200) {
     // } else {
     // }
 });
@@ -53,17 +53,15 @@ const notificationList = ref([
 
 // function to make a notification status to true (has read)
 async function wasRead(notificationId) {
-    // const response = await fetch(baseEndpoint + "", {
+    // const response = await fetch(baseEndpoint + "/notification/" + notificationId, {
     //     method: "PATCH",
     //     mode: "cors",
     //     headers: { "Content-Type": "application/json" },
     //     credentials: "same-origin",
     //     body: JSON.stringify({}),
     // });
-
     // const res = await response.json();
-
-    // if (response.status) {
+    // if (response.status !== 200) {
     // } else {
     // const response2 = await fetch(baseEndpoint + "", {
     //     method: "GET",
@@ -101,17 +99,15 @@ const disableBtn = ref(
 
 // function to make all notifications status to true (has read)
 async function readAll() {
-    // const response = await fetch(baseEndpoint + "", {
+    // const response = await fetch(baseEndpoint + "/notification/user/" + user.value.id, {
     //     method: "PATCH",
     //     mode: "cors",
     //     headers: { "Content-Type": "application/json" },
     //     credentials: "same-origin",
     //     body: JSON.stringify({}),
     // });
-
     // const res = await response.json();
-
-    // if (response.status) {
+    // if (response.status !== 200) {
     // } else {
     // const response2 = await fetch(baseEndpoint + "", {
     //     method: "GET",
