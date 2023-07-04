@@ -220,12 +220,12 @@ watchEffect(async () => {
                             class="max-w-5xl mx-auto px-4 max-md:px-0 flex items-center gap-4 relative w-full top-0 max-md:w-[95%] max-md:gap-2"
                         >
                             <div
-                                class="border-2 border-indigo-200 rounded-md w-32 h-32 grid place-items-center"
+                                class="border-2 border-indigo-200 rounded-md w-32 h-32 bg-gray-50 grid place-items-center"
                             >
                                 <img
                                     v-bind:src="company.pic"
                                     alt=""
-                                    class="w-full h-auto bg-gray-50 max-md:w-20 max-md:h-auto"
+                                    class="w-full h-auto max-md:w-20 max-md:h-auto"
                                 />
                             </div>
                             <div>
@@ -360,11 +360,15 @@ watchEffect(async () => {
                                 <div
                                     class="flex items-center gap-4 max-md:flex-col max-md:items-start"
                                 >
-                                    <img
-                                        v-bind:src="job.company.pic"
-                                        alt=""
-                                        class="border-2 border-indigo-200 rounded-md w-32 h-32 max-md:w-16 max-md:h-16"
-                                    />
+                                    <div
+                                        class="border-2 border-indigo-200 rounded-md w-32 h-32 max-md:w-16 max-md:h-16 grid place-items-center"
+                                    >
+                                        <img
+                                            v-bind:src="job.company.pic"
+                                            alt=""
+                                            class="w-full h-auto"
+                                        />
+                                    </div>
                                     <div class="">
                                         <router-link
                                             class="text-2xl font-semibold mb-1 hover:underline cursor-pointer select-none max-md:text-xl"
