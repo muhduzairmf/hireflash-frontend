@@ -196,7 +196,7 @@ function toggleModalPreview() {
                                 class="flex items-center gap-4 max-md:flex-col max-md:items-start"
                             >
                                 <div
-                                    class="border-2 border-indigo-200 rounded-md w-32 h-32"
+                                    class="border-2 border-indigo-200 rounded-md w-32 h-32 grid place-items-center"
                                 >
                                     <img
                                         v-bind:src="job.company.pic"

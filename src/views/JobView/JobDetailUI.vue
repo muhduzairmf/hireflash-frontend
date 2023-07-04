@@ -223,7 +223,7 @@ watchEffect(async () => {
                         </button>
                         <div class="flex justify-center mb-4 max-md:mt-2">
                             <div
-                                class="border-2 border-indigo-200 rounded-md w-40 h-40"
+                                class="border-2 border-indigo-200 rounded-md w-40 h-40 grid place-items-center"
                             >
                                 <img
                                     v-bind:src="job.company.pic"

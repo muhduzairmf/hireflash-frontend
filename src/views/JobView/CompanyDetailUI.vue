@@ -220,7 +220,7 @@ watchEffect(async () => {
                             class="max-w-5xl mx-auto px-4 max-md:px-0 flex items-center gap-4 relative w-full top-0 max-md:w-[95%] max-md:gap-2"
                         >
                             <div
-                                class="border-2 border-indigo-200 rounded-md w-32 h-32"
+                                class="border-2 border-indigo-200 rounded-md w-32 h-32 grid place-items-center"
                             >
                                 <img
                                     v-bind:src="company.pic"
