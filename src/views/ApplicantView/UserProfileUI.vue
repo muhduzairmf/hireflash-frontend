@@ -17,7 +17,9 @@ document.title = "User Information - Hireflash";
 onMounted(() => {
     window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
         const dataUpload = e.detail.data[0];
-        await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+        if (!dataUpload.name.includes(".pdf")) {
+            await uploadNewProfileImg(dataUpload.cdnUrl + dataUpload.name);
+        }
     });
 });
 

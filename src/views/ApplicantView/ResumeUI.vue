@@ -41,7 +41,9 @@ onMounted(async () => {
 
     window.addEventListener("LR_UPLOAD_FINISH", async (e) => {
         const dataUpload = e.detail.data[0];
-        await uploadNewResume(dataUpload.cdnUrl + dataUpload.name);
+        if (dataUpload.name.includes(".pdf")) {
+            await uploadNewResume(dataUpload.cdnUrl + dataUpload.name);
+        }
     });
 });
 
