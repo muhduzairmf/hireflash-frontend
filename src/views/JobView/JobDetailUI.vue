@@ -225,7 +225,7 @@ watchEffect(async () => {
                             <img
                                 v-bind:src="job.company.pic"
                                 alt=""
-                                class="border-2 border-indigo-200 rounded-md w-40 h-40 transition ease-in-out hover:rotate-[5deg]"
+                                class="border-2 border-indigo-200 rounded-md w-40 h-auto transition ease-in-out hover:rotate-[5deg]"
                             />
                         </div>
                         <div class="mb-4">

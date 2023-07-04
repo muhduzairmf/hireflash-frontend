@@ -285,7 +285,7 @@ function handleUploaderEvent(e) {
                 <img
                     v-bind:src="imgSrc"
                     alt=""
-                    class="border-2 border-indigo-200 rounded-md w-28 h-28"
+                    class="border-2 border-indigo-200 rounded-md w-28 h-auto"
                 />
                 <div class="flex flex-col gap-2">
                     <div class="flex gap-4">
