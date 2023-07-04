@@ -277,7 +277,7 @@ function toggleModelInfo() {
                             v-for="theOfficer in officerList"
                         >
                             <img
-                                src=""
+                                v-bind:src="theOfficer.user.pic"
                                 alt=""
                                 class="border-2 border-indigo-200 rounded-md w-24 h-24 bg-gray-200 max-md:w-16 max-md:h-16"
                             />
