@@ -101,11 +101,15 @@ function toggleModelInfo() {
             <div
                 class="max-w-5xl mx-auto flex items-center gap-4 relative w-full top-20 max-md:w-[95%] max-md:top-12 max-md:gap-2"
             >
-                <img
-                    v-bind:src="company.pic"
-                    alt=""
+                <div
                     class="border-2 border-indigo-200 rounded-md w-32 h-32 bg-gray-50 max-md:w-20 max-md:h-20"
-                />
+                >
+                    <img
+                        v-bind:src="company.pic"
+                        alt=""
+                        class="w-full h-auto"
+                    />
+                </div>
                 <div>
                     <h4 class="font-semibold text-xl max-md:text-lg">
                         {{ company.name }}
@@ -181,13 +185,15 @@ function toggleModelInfo() {
                     <template v-if="recruitList.length > 0">
                         <div
                             class="flex justify-between items-center py-4 max-md:flex-col max-md:items-start max-md:gap-2"
+                            v-for="recruit in recruitList"
                         >
                             <div class="">
                                 <h4 class="text-xl font-semibold">
-                                    Cloud Engineer
+                                    {{ recruit.designation }}
                                 </h4>
                                 <p>
-                                    Last updated &nbsp;:&nbsp; 31 December 2022
+                                    Last updated &nbsp;:&nbsp;
+                                    {{ recruit.last_modified_date }}
                                 </p>
                             </div>
                             <div
