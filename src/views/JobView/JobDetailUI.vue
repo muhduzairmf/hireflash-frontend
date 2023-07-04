@@ -222,11 +222,15 @@ watchEffect(async () => {
                             <i class="bi bi-arrow-left text-xl"></i>
                         </button>
                         <div class="flex justify-center mb-4 max-md:mt-2">
-                            <img
-                                v-bind:src="job.company.pic"
-                                alt=""
-                                class="border-2 border-indigo-200 rounded-md w-40 h-auto transition ease-in-out hover:rotate-[5deg]"
-                            />
+                            <div
+                                class="border-2 border-indigo-200 rounded-md w-40 h-40"
+                            >
+                                <img
+                                    v-bind:src="job.company.pic"
+                                    alt=""
+                                    class="w-full h-auto transition ease-in-out hover:rotate-[5deg]"
+                                />
+                            </div>
                         </div>
                         <div class="mb-4">
                             <TitleBorder title="Designation" />

@@ -195,11 +195,15 @@ function toggleModalPreview() {
                             <div
                                 class="flex items-center gap-4 max-md:flex-col max-md:items-start"
                             >
-                                <img
-                                    v-bind:src="job.company.pic"
-                                    alt=""
-                                    class="border-2 border-indigo-200 rounded-md w-32 h-auto max-md:w-16 max-md:h-auto"
-                                />
+                                <div
+                                    class="border-2 border-indigo-200 rounded-md w-32 h-32"
+                                >
+                                    <img
+                                        v-bind:src="job.company.pic"
+                                        alt=""
+                                        class="w-full h-auto max-md:w-16 max-md:h-auto"
+                                    />
+                                </div>
                                 <div class="">
                                     <h1
                                         class="text-2xl font-semibold mb-1 hover:underline cursor-pointer select-none max-md:text-xl"

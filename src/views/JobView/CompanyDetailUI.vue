@@ -219,11 +219,15 @@ watchEffect(async () => {
                         <div
                             class="max-w-5xl mx-auto px-4 max-md:px-0 flex items-center gap-4 relative w-full top-0 max-md:w-[95%] max-md:gap-2"
                         >
-                            <img
-                                v-bind:src="company.pic"
-                                alt=""
-                                class="border-2 border-indigo-200 rounded-md w-32 h-auto bg-gray-50 max-md:w-20 max-md:h-auto"
-                            />
+                            <div
+                                class="border-2 border-indigo-200 rounded-md w-32 h-32"
+                            >
+                                <img
+                                    v-bind:src="company.pic"
+                                    alt=""
+                                    class="w-full h-auto bg-gray-50 max-md:w-20 max-md:h-auto"
+                                />
+                            </div>
                             <div>
                                 <h4
                                     class="font-semibold text-2xl max-md:text-xl text-white"

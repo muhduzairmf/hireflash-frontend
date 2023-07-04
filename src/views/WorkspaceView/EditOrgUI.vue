@@ -282,11 +282,9 @@ function handleUploaderEvent(e) {
             <div
                 class="mt-4 flex items-center gap-4 max-md:flex-col max-md:items-start"
             >
-                <img
-                    v-bind:src="imgSrc"
-                    alt=""
-                    class="border-2 border-indigo-200 rounded-md w-28 h-auto"
-                />
+                <div class="border-2 border-indigo-200 rounded-md w-28">
+                    <img v-bind:src="imgSrc" alt="" class="w-full h-auto" />
+                </div>
                 <div class="flex flex-col gap-2">
                     <div class="flex gap-4">
                         <button
